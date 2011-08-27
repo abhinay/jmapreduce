@@ -3,7 +3,6 @@ require 'java'
 import java.io.IOException
 
 class JMapper < org.apache.hadoop.mapreduce.Mapper
-  include Job
   
   @key = org.apache.hadoop.io.Text.new
   @value = org.apache.hadoop.io.Text.new

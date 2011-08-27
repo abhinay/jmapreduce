@@ -3,7 +3,6 @@ require 'java'
 import java.io.IOException
 
 class JReducer < org.apache.hadoop.mapreduce.Reducer
-  include Job
   
   @key = org.apache.hadoop.io.Text.new
   @value = org.apache.hadoop.io.Text.new

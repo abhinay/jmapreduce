@@ -1,5 +1,8 @@
 require 'java'
 
+import 'JMapper'
+import 'JReducer'
+
 class JMapReduce
   def map(blk)
     @mapper = blk

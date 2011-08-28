@@ -5,7 +5,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
-public class ReducerWrapper extends Reducer {
+public class ReducerWrapper extends Reducer<Text,Text,Text,Text> {
 
 	private JReducer jreducer;
 	

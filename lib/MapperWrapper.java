@@ -3,7 +3,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
-public class MapperWrapper extends Mapper {
+public class MapperWrapper extends Mapper<Object, Text, Text, Text> {
 	
 	private JMapper jmapper;
 	

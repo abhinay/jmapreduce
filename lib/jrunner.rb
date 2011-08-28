@@ -47,12 +47,12 @@ class JRunner
     @dirnames = [File.dirname(@script_path)]
 
     # ignore the first arg which we know is the script arg
-    @args[1..-1].each do |arg|
-      if File.file?(arg)
-        @files << arg
-        @dirnames << File.dirname(arg)
-      end
-    end
+    # @args[1..-1].each do |arg|
+    #   if File.file?(arg)
+    #     @files << arg
+    #     @dirnames << File.dirname(arg)
+    #   end
+    # end
   end
 
   def mapred_args
@@ -60,7 +60,7 @@ class JRunner
 
     # ignore the first arg which we know is the script arg
     @args[1..-1].each do |arg|
-      arg = File.basename(arg) if File.file?(arg)
+      # arg = File.basename(arg) if File.file?(arg)
       args += "#{arg} "
     end
     args

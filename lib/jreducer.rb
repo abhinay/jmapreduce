@@ -7,6 +7,7 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
   @key = org.apache.hadoop.io.Text.new
   @value = org.apache.hadoop.io.Text.new
 
+  java_signature 'void setup(org.apache.hadoop.mapreduce.Reducer.Context) throws IOException'
   def setup(context)
     conf = context.getConfiguration
     script = conf.set('jmapreduce.script.name')
@@ -16,7 +17,7 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
     @reducer = JMapReduce.jobs.get(job_index).reducer
   end
 
-  java_signature 'void map(org.apache.hadoop.io.Text, java.lang.Iterable, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
+  java_signature 'void reduce(org.apache.hadoop.io.Text, java.lang.Iterable, org.apache.hadoop.mapreduce.Reducer.Context) throws IOException'
   def reduce(key, values, context)
     tuples = @reducer.call(key,values)
     tuples.each do |(k,v)|

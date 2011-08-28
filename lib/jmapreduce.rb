@@ -1,8 +1,8 @@
 require 'java'
 
-import 'JMapper'
-import 'JReducer'
 import 'JMapReduceJob'
+import 'MapperWrapper'
+import 'ReducerWrapper'
 
 class JMapReduce
   def self.jobs
@@ -35,13 +35,13 @@ class JMapReduce
       conf.set('jmapreduce.job.index', index.to_s)
       job = org.apache.hadoop.mapreduce.Job.new(conf, job.name)
       job.setJarByClass(JMapReduce.to_java.getReifiedClass)
-      job.setMapperClass(JMapper.to_java.getReifiedClass)
-      job.setReducerClass(JReducer.to_java.getReifiedClass)
+      job.setMapperClass(MapperWrapper.to_java.getReifiedClass)
+      job.setReducerClass(ReducerWrapper.to_java.getReifiedClass)
       job.setOutputKeyClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
       job.setOutputValueClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
       
-      FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[1]))
-      FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[2]))
+      org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[1]))
+      org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[2]))
       java.lang.System.exit(job.waitForCompletion(true) ? 0 : 1)
     end
   end

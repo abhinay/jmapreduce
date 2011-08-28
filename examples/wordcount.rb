@@ -1,6 +1,7 @@
-require 'jmapreduce'
+require 'java'
+import 'JMapReduce'
 
-JMapReduce.job('Name') do |job|
+JMapReduce.job 'Name' do |job|
   job.map do |value|
     return [{value => value}]
   end

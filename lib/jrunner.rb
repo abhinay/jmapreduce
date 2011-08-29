@@ -36,33 +36,21 @@ class JRunner
 
   def cmd
     "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS}" +
-    " -libjars #{opt_libjars} -files #{opt_files} #{mapred_args}"
+    " -libjars #{jruby_jars.join(',')} -files #{@files.join(',')} #{mapred_args}"
   end
 
   def parse_args
-    raise "Usage: jmapreduce script_path input_path output_path" if @args.size < 3
+    raise "Usage: jmapreduce [options] script_path input_path output_path" if @args.size < 3
     @script_path = @args[0]
     @script = File.basename(@script_path)
     @files = [@script_path]
     @dirnames = [File.dirname(@script_path)]
-
-    # ignore the first arg which we know is the script arg
-    # @args[1..-1].each do |arg|
-    #   if File.file?(arg)
-    #     @files << arg
-    #     @dirnames << File.dirname(arg)
-    #   end
-    # end
   end
 
   def mapred_args
     args = "#{@script} "
-
     # ignore the first arg which we know is the script arg
-    @args[1..-1].each do |arg|
-      # arg = File.basename(arg) if File.file?(arg)
-      args += "#{arg} "
-    end
+    args += @args[1..-1].join(' ')
     args
   end
 
@@ -73,9 +61,6 @@ class JRunner
   def archive_file?(file)
     File.file?(file) && %w(.zip .jar .tar .gz).include?(File.extname(file))
   end
-
-  def opt_libjars; jruby_jars.join(',') end
-  def opt_files; @files.join(',') end
 
   def main_jar_path
     File.expand_path(File.join(File.dirname(__FILE__), '..', 'release', 'jmapreduce.jar'))

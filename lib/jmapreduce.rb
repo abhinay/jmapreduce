@@ -33,16 +33,17 @@ class JMapReduce
     
     @@jobs.each_with_index do |job,index|
       conf.set('jmapreduce.job.index', index.to_s)
+
       job = org.apache.hadoop.mapreduce.Job.new(conf, job.name)
       job.setJarByClass(JMapReduce.to_java.getReifiedClass)
       job.setMapperClass(MapperWrapper.to_java.getReifiedClass)
       job.setReducerClass(ReducerWrapper.to_java.getReifiedClass)
       job.setOutputKeyClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
       job.setOutputValueClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
-      
+
       org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[1]))
       org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[2]))
-      java.lang.System.exit(job.waitForCompletion(true) ? 0 : 1)
+      job.waitForCompletion(true)
     end
   end
 end

@@ -14,10 +14,10 @@ public class ReducerWrapper extends Reducer<Text,Text,Text,Text> {
 	}
 
 	public void setup(Context context) throws IOException {
-	  jreducer.setup(context);
+    jreducer.setup(context);
   }
 	
-	public void reduce(Text key, Iterable values, Context context) throws IOException {
+	public void reduce(Text key, Iterable<Text> values, Context context) throws IOException {
 		jreducer.reduce(key, values, context);
 	}
 }

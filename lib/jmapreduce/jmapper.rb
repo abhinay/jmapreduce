@@ -21,21 +21,17 @@ class JMapper < org.apache.hadoop.mapreduce.Mapper
   java_signature 'void map(java.lang.Object, org.apache.hadoop.io.Text, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def map(key, value, context)
     value = value.to_s
-    k,v = *value.split("\t")
-    if v.nil?
-      v = value
-      k = key
-    end
+    key,value = *value.split("\t") if value.include?("\t")
     
     if @mapper.nil?
-      @key.set(k.to_s)
-      @value.set(v.to_s)
+      @key.set(key.to_s)
+      @value.set(value.to_s)
       context.write(@key, @value)
       return
     end
     
     results = []
-    @mapper.call(k, v, results)
+    @mapper.call(key, value, results)
     results.each do |tuple|
       tuple.each do |(k,v)|
         @key.set(k.to_s)

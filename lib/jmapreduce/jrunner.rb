@@ -69,6 +69,6 @@ class JRunner
   end
 
   def lib_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+    File.expand_path(File.join(File.dirname(__FILE__), '..'))
   end
 end

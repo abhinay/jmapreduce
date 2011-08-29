@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), *%w[.. lib jmapreduce])
+import 'JMapReduce'
 
 JMapReduce.job 'Count' do
   reduce_tasks 1
@@ -28,7 +28,7 @@ JMapReduce.job "Histogram" do
   
   reduce do |range, counts, output|
     total = counts.inject(0) {|sum,count| sum+count.to_i }
-    output << { range => '|'*total }
+    output << { range => '|'*(total/20) }
   end
 end
 

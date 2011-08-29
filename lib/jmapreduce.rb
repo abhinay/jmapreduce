@@ -27,12 +27,25 @@ class JMapReduce
     end
     
     script = otherArgs[0]
+    script_input = otherArgs[1]
+    script_output = otherArgs[2]
     conf.set('jmapreduce.script.name', script)
     
     require script
     
+    input = script_input
+    output = script_output
+    
     @@jobs.each_with_index do |job,index|
       conf.set('jmapreduce.job.index', index.to_s)
+      
+      if @@jobs.size > 1
+        if index == @@jobs.size-1
+          output = script_output
+        else
+          output = "#{script_output}-part-#{index}"
+        end
+      end
 
       job = org.apache.hadoop.mapreduce.Job.new(conf, job.name)
       job.setJarByClass(JMapReduce.to_java.getReifiedClass)
@@ -41,9 +54,11 @@ class JMapReduce
       job.setOutputKeyClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
       job.setOutputValueClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
 
-      org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[1]))
-      org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(otherArgs[2]))
+      org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(input))
+      org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(output))
       job.waitForCompletion(true)
+      
+      input = output
     end
   end
 end

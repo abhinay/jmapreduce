@@ -27,3 +27,8 @@ JMapReduce.job "Histogram" do |job|
     output << { range => '|'*total }
   end
 end
+
+# this job is pretty useless, it's just a pass though.
+# but it does mean we can take advantage of the map/reduce shuffle and get nicely ordered keys.
+JMapReduce.job "Sort" do |job|
+end

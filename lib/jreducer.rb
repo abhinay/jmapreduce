@@ -18,6 +18,13 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
   
   java_signature 'void reduce(org.apache.hadoop.io.Text, java.lang.Iterable, org.apache.hadoop.mapreduce.Reducer.Context) throws IOException'
   def reduce(key, values, context)
+    if @reducer.nil?
+      values.each do |value|
+        context.write(key, value)
+      end
+      return
+    end
+    
     results = []
     @reducer.call(key, values.map{|v|v.to_s}, results)
     results.each do |tuple|

@@ -61,14 +61,14 @@ class JRunner
   end
 
   def lib_jars
-    [File.expand_path(File.join(File.dirname(__FILE__), '..', 'vendors', 'jruby.jar')), main_jar_path]
+    [File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'jruby.jar')), main_jar_path]
   end
 
   def main_jar_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..', 'release', 'jmapreduce.jar'))
+    File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'release', 'jmapreduce.jar'))
   end
 
   def lib_path
-    File.expand_path(File.join(File.dirname(__FILE__), '..'))
+    File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
   end
 end

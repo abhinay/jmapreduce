@@ -1,4 +1,4 @@
-import 'JMapReduce'
+require File.join(File.dirname(__FILE__), *%w[.. lib jmapreduce])
 
 JMapReduce.job 'Count' do
   reduce_tasks 1

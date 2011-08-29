@@ -2,7 +2,7 @@
 require "rubygems"
 require 'optparse'
 require 'ostruct'
-require File.join(File.dirname(__FILE__), '..', 'lib', 'jrunner')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'jmapreduce', 'jrunner')
 
 options = OpenStruct.new
 

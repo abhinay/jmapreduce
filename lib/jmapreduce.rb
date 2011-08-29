@@ -9,7 +9,7 @@ class JMapReduce
     @@jobs
   end
   
-  def self.job(name, blk)
+  def self.job(name, &blk)
     job = JMapReduceJob.new
     job.set_name(name)
     @@jobs ||= []

@@ -1,9 +1,9 @@
 class JMapReduceJob
-  def map(blk)
+  def map(&blk)
     @mapper = blk
   end
 
-  def reduce(blk)
+  def reduce(&blk)
     @reducer = blk
   end
 
@@ -21,5 +21,9 @@ class JMapReduceJob
 
   def name
     @name
+  end
+  
+  def set_mapreduce(blk)
+    self.instance_eval(&blk)
   end
 end

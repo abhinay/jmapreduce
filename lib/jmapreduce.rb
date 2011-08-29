@@ -14,7 +14,7 @@ class JMapReduce
     job.set_name(name)
     @@jobs ||= []
     @@jobs << job
-    blk.call(job)
+    job.set_mapreduce(blk)
   end
   
   java_signature 'void main(String[])'

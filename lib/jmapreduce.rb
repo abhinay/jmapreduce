@@ -36,7 +36,7 @@ class JMapReduce
     input = script_input
     output = script_output
     
-    @@jobs.each_with_index do |job,index|
+    @@jobs.each_with_index do |jmapreduce_job,index|
       conf.set('jmapreduce.job.index', index.to_s)
       
       if @@jobs.size > 1
@@ -46,14 +46,16 @@ class JMapReduce
           output = "#{script_output}-part-#{index}"
         end
       end
-
-      job = org.apache.hadoop.mapreduce.Job.new(conf, job.name)
+      
+      job = org.apache.hadoop.mapreduce.Job.new(conf, jmapreduce_job.name)
+      job.setNumReduceTasks(jmapreduce_job.num_of_reduce_tasks)
+      
       job.setJarByClass(JMapReduce.to_java.getReifiedClass)
       job.setMapperClass(MapperWrapper.to_java.getReifiedClass)
       job.setReducerClass(ReducerWrapper.to_java.getReifiedClass)
       job.setOutputKeyClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
       job.setOutputValueClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
-
+      
       org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(input))
       org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(output))
       job.waitForCompletion(true)

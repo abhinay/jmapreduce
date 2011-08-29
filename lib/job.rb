@@ -23,6 +23,19 @@ class JMapReduceJob
     @name
   end
   
+  def map_tasks(num_of_tasks)
+    @map_tasks = num_of_tasks
+  end
+  
+  def reduce_tasks(num_of_tasks)
+    @reduce_tasks = num_of_tasks
+  end
+  
+  def num_of_reduce_tasks
+    return @reduce_tasks if @reduce_tasks
+    @reducer ? 1 : 0
+  end
+  
   def set_mapreduce(blk)
     self.instance_eval(&blk)
   end

@@ -1,24 +1,36 @@
 class JMapReduceJob
+  def setup(&blk)
+    @setup = blk
+  end
+  
   def map(&blk)
     @mapper = blk
   end
-
+  
   def reduce(&blk)
     @reducer = blk
   end
-
+  
   def mapper
     @mapper
   end
-
+  
   def reducer
     @reducer
   end
-
+  
+  def get_setup
+    @setup
+  end
+  
+  def setup_exists
+    !@setup.nil?
+  end
+  
   def set_name(name)
     @name = name
   end
-
+  
   def name
     @name
   end

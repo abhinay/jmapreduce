@@ -17,7 +17,9 @@ JMapReduce.job 'Count' do
 end
 
 JMapReduce.job "Histogram" do
-  RANGES = [0..1, 2..3, 4..5, 6..10, 11..20, 21..30, 31..40, 41..50, 51..100, 101..200, 201..300, 301..10_000, 10_001..99_999]
+  setup do
+    RANGES = [0..1, 2..3, 4..5, 6..10, 11..20, 21..30, 31..40, 41..50, 51..100, 101..200, 201..300, 301..10_000, 10_001..99_999]
+  end
   
   map do |word, count, output|
     range = RANGES.find {|range| range.include?(count.to_i) }

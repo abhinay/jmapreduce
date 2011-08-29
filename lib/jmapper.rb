@@ -13,9 +13,11 @@ class JMapper < org.apache.hadoop.mapreduce.Mapper
     job_index = conf.get('jmapreduce.job.index').to_i
     
     require script
-    @mapper = JMapReduce.jobs[job_index].mapper
+    job = JMapReduce.jobs[job_index]
+    job.get_setup.call if job.setup_exists
+    @mapper = job.mapper
   end
-
+  
   java_signature 'void map(java.lang.Object, org.apache.hadoop.io.Text, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def map(key, value, context)
     value = value.to_s

@@ -11,8 +11,10 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
     conf = context.getConfiguration
     script = conf.get('jmapreduce.script.name')
     job_index = conf.get('jmapreduce.job.index').to_i
-  
+    
     require script
+    job = JMapReduce.jobs[job_index]
+    job.get_setup.call if job.setup_exists
     @reducer = JMapReduce.jobs[job_index].reducer
   end
   

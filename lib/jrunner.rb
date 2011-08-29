@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'jruby-jars'
 
 class JRunner
   JAVA_MAIN_CLASS = 'JMapReduce'
@@ -28,7 +27,7 @@ class JRunner
   end
 
   def hadoop_classpath
-    ENV['HADOOP_CLASSPATH'] = ([lib_path] + dirnames + jruby_jars).join(':')
+    ENV['HADOOP_CLASSPATH'] = ([lib_path] + dirnames + lib_jars).join(':')
   end
 
   def run
@@ -41,7 +40,7 @@ class JRunner
   end
 
   def jars_args
-    "-libjars #{jruby_jars.join(',')}"
+    "-libjars #{lib_jars.join(',')}"
   end
 
   def file_args
@@ -61,8 +60,8 @@ class JRunner
     [File.dirname(@script)]
   end
 
-  def jruby_jars
-    [JRubyJars.core_jar_path, JRubyJars.stdlib_jar_path, main_jar_path]
+  def lib_jars
+    [File.expand_path(File.join(File.dirname(__FILE__), '..', 'vendors', 'jruby.jar')), main_jar_path]
   end
 
   def main_jar_path

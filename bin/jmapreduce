@@ -1,5 +1,22 @@
 #!/usr/bin/env ruby
-
+require "rubygems"
+require 'optparse'
+require 'ostruct'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'jrunner')
 
-JRunner.new(ARGV).run
+options = OpenStruct.new
+
+OptionParser.new do |opts|
+  opts.banner = "USAGE: jmapreduce script input output [options]"
+
+  opts.on("-c", "--conf HADOOP_CONF", "Use this cluster xml config file") do |config|
+    options.config = config
+  end
+  
+  opts.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+end.parse!
+
+JRunner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config).run

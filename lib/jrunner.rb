@@ -6,10 +6,12 @@ class JRunner
 
   attr_reader :script, :files
 
-  def initialize(args=[])
-    @args = args
-    parse_args
-
+  def initialize(script, input, output, opts={})
+    @script = script
+    @input = input
+    @output = output
+    @opts = opts
+    
     # env get / set and check
     hadoop_home and hadoop_cmd and hadoop_classpath
   end
@@ -26,7 +28,7 @@ class JRunner
   end
 
   def hadoop_classpath
-    ENV['HADOOP_CLASSPATH'] = ([lib_path] + @dirnames + jruby_jars).join(':')
+    ENV['HADOOP_CLASSPATH'] = ([lib_path] + dirnames + jruby_jars).join(':')
   end
 
   def run
@@ -35,31 +37,32 @@ class JRunner
   end
 
   def cmd
-    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS}" +
-    " -libjars #{jruby_jars.join(',')} -files #{@files.join(',')} #{mapred_args}"
+    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS} #{jars_args} #{file_args} #{conf_args} #{mapred_args}"
   end
 
-  def parse_args
-    raise "Usage: jmapreduce [options] script_path input_path output_path" if @args.size < 3
-    @script_path = @args[0]
-    @script = File.basename(@script_path)
-    @files = [@script_path]
-    @dirnames = [File.dirname(@script_path)]
+  def jars_args
+    "-libjars #{jruby_jars.join(',')}"
+  end
+
+  def file_args
+    files = [@script]
+    "-files #{files.join(',')}"
+  end
+
+  def conf_args
+    @opts[:conf] ? "-conf #{@opts[:conf]}" : ''
   end
 
   def mapred_args
-    args = "#{@script} "
-    # ignore the first arg which we know is the script arg
-    args += @args[1..-1].join(' ')
-    args
+    "#{File.basename(@script)} #{@input} #{@output}"
+  end
+  
+  def dirnames
+    [File.dirname(@script)]
   end
 
   def jruby_jars
     [JRubyJars.core_jar_path, JRubyJars.stdlib_jar_path, main_jar_path]
-  end
-
-  def archive_file?(file)
-    File.file?(file) && %w(.zip .jar .tar .gz).include?(File.extname(file))
   end
 
   def main_jar_path

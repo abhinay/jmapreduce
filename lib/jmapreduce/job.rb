@@ -1,3 +1,7 @@
+require 'java'
+
+import 'JsonProperty'
+
 class JMapReduceJob
   def setup(&blk)
     @setup = blk
@@ -69,7 +73,7 @@ class JMapReduceJob
     
     key,value = *property.split('=')
     if key == 'json'
-      @properties = JSON.parse(CGI.unescape(value))
+      @properties = JsonProperty.parse(value)
     else
       @properties ||= {}
       @properties[key] = value

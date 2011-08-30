@@ -63,7 +63,7 @@ class JRunner
   end
   
   def lib_jars
-    [JRubyJars.core_jar_path, JRubyJars.stdlib_jar_path, main_jar_path]
+    [JRubyJars.core_jar_path, JRubyJars.stdlib_jar_path, main_jar_path, File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'gson.jar'))]
   end
   
   def main_jar_path

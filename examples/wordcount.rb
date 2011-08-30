@@ -3,16 +3,16 @@ import 'JMapReduce'
 JMapReduce.job 'Count' do
   reduce_tasks 1
   
-  map do |key, value, output|
+  map do |key, value|
     value.split.each do |word|
-      output << { word => 1 }
+      emit(word, 1)
     end
   end
   
-  reduce do |key, values, output|
+  reduce do |key, values|
     sum = 0
     values.each {|v| sum += v.to_i }
-    output << { key => sum }
+    emit(key, sum)
   end
 end
 
@@ -21,14 +21,14 @@ JMapReduce.job "Histogram" do
     RANGES = [0..1, 2..3, 4..5, 6..10, 11..20, 21..30, 31..40, 41..50, 51..100, 101..200, 201..300, 301..10_000, 10_001..99_999]
   end
   
-  map do |word, count, output|
+  map do |word, count|
     range = RANGES.find {|range| range.include?(count.to_i) }
-    output << { "#{range.first.to_s.rjust(5,'0')}-#{range.last.to_s.rjust(5,'0')}" => 1 }
+    emit("#{range.first.to_s.rjust(5,'0')}-#{range.last.to_s.rjust(5,'0')}", 1)
   end
   
-  reduce do |range, counts, output|
+  reduce do |range, counts|
     total = counts.inject(0) {|sum,count| sum+count.to_i }
-    output << { range => '|'*(total/20) }
+    emit(range, '|'*(total/20))
   end
 end
 
@@ -36,3 +36,7 @@ end
 JMapReduce.job "Sort" do
   reduce_tasks 1
 end
+
+__END__
+
+./bin/jmapreduce examples/wordcount.rb examples/alice.txt /tmp/output

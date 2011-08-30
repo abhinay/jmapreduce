@@ -14,6 +14,7 @@ class JMapper < org.apache.hadoop.mapreduce.Mapper
     
     require script
     job = JMapReduce.jobs[job_index]
+    job.set_context(context, @key, @value)
     job.get_setup.call if job.setup_exists
     @mapper = job.mapper
   end
@@ -30,14 +31,6 @@ class JMapper < org.apache.hadoop.mapreduce.Mapper
       return
     end
     
-    results = []
-    @mapper.call(key, value, results)
-    results.each do |tuple|
-      tuple.each do |(k,v)|
-        @key.set(k.to_s)
-        @value.set(v.to_s)
-        context.write(@key, @value)
-      end
-    end
+    @mapper.call(key, value)
   end
 end

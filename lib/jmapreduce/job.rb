@@ -51,4 +51,16 @@ class JMapReduceJob
   def set_mapreduce(blk)
     self.instance_eval(&blk)
   end
+  
+  def set_context(context, key, value)
+    @context = context
+    @key = key
+    @value = value
+  end
+  
+  def emit(key, value)
+    @key.set(key.to_s)
+    @value.set(value.to_s)
+    @context.write(@key, @value)
+  end
 end

@@ -14,6 +14,7 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
     
     require script
     job = JMapReduce.jobs[job_index]
+    job.set_context(context, @key, @value)
     job.get_setup.call if job.setup_exists
     @reducer = JMapReduce.jobs[job_index].reducer
   end
@@ -27,14 +28,6 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
       return
     end
     
-    results = []
-    @reducer.call(key, values.map{|v|v.to_s}, results)
-    results.each do |tuple|
-      tuple.each do |(k,v)|
-        @key.set(k.to_s)
-        @value.set(v.to_s)
-        context.write(@key, @value)
-      end
-    end
+    @reducer.call(key, values.map{|v|v.to_s})
   end
 end

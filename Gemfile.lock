@@ -1,0 +1,10 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    jruby-jars (1.6.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  jruby-jars (~> 1.6)

@@ -21,7 +21,8 @@ class JMapReduce
   def self.main(args)
     conf = org.apache.hadoop.conf.Configuration.new
     otherArgs = org.apache.hadoop.util.GenericOptionsParser.new(conf, args).getRemainingArgs
-    if (otherArgs.size != 3)
+    
+    if (otherArgs.size < 3)
       java.lang.System.err.println("Usage: JMapReduce <script> <in> <out>")
       java.lang.System.exit(2)
     end
@@ -31,8 +32,15 @@ class JMapReduce
     script_output = otherArgs[2]
     conf.set('jmapreduce.script.name', script)
     
-    require script
+    if otherArgs.size > 3
+      (3..(otherArgs.size-1)).each do |index|
+        if otherArgs[index].include?('=')
+          conf.set('jmapreduce.property', otherArgs[index])
+        end
+      end
+    end
     
+    require script
     input = script_input
     output = script_output
     
@@ -50,11 +58,11 @@ class JMapReduce
       job = org.apache.hadoop.mapreduce.Job.new(conf, jmapreduce_job.name)
       job.setNumReduceTasks(jmapreduce_job.num_of_reduce_tasks)
       
-      job.setJarByClass(JMapReduce.to_java.getReifiedClass)
-      job.setMapperClass(MapperWrapper.to_java.getReifiedClass)
-      job.setReducerClass(ReducerWrapper.to_java.getReifiedClass)
-      job.setOutputKeyClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
-      job.setOutputValueClass(org.apache.hadoop.io.Text.to_java.getReifiedClass)
+      job.setJarByClass(JMapReduce.java_class)
+      job.setMapperClass(MapperWrapper.java_class)
+      job.setReducerClass(ReducerWrapper.java_class)
+      job.setOutputKeyClass(org.apache.hadoop.io.Text.java_class)
+      job.setOutputValueClass(org.apache.hadoop.io.Text.java_class)
       
       org.apache.hadoop.mapreduce.lib.input.FileInputFormat.addInputPath(job, org.apache.hadoop.fs.Path.new(input))
       org.apache.hadoop.mapreduce.lib.output.FileOutputFormat.setOutputPath(job, org.apache.hadoop.fs.Path.new(output))

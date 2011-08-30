@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 require "rubygems"
+require "bundler/setup"
+require 'jruby-jars'
 require 'optparse'
 require 'ostruct'
+require 'cgi'
+
 require File.join(File.dirname(__FILE__), '..', 'lib', 'jmapreduce', 'jrunner')
 
 options = OpenStruct.new
@@ -13,10 +17,18 @@ OptionParser.new do |opts|
     options.config = config
   end
   
+  opts.on("-v", '--variables name=value', "Pass additional parameters to jobs") do |config|
+    options.properties = config
+  end
+  
+  opts.on("-j", '--json {"key":"1 value"}', "Pass JSON encoded parameters to jobs") do |config|
+    options.properties = "json=#{CGI.escape(config)}"
+  end
+  
   opts.on_tail("-h", "--help", "Show this message") do
     puts opts
     exit
   end
 end.parse!
 
-JRunner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config).run
+JRunner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties).run

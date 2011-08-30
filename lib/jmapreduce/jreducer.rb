@@ -16,6 +16,7 @@ class JReducer < org.apache.hadoop.mapreduce.Reducer
     job = JMapReduce.jobs[job_index]
     job.set_context(context, @key, @value)
     job.get_setup.call if job.setup_exists
+    job.set_properties(conf.get('jmapreduce.property'))
     @reducer = JMapReduce.jobs[job_index].reducer
   end
   

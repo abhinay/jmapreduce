@@ -1,3 +1,5 @@
+package org.fingertap.jmapreduce;
+
 import java.util.HashMap;
 import java.net.URLDecoder;
 import java.lang.reflect.Type;

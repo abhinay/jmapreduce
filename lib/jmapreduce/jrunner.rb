@@ -1,5 +1,5 @@
 class JRunner
-  JAVA_MAIN_CLASS = 'JMapReduce'
+  JAVA_MAIN_CLASS = 'org.fingertap.jmapreduce.JMapReduce'
   
   attr_reader :script, :files
   

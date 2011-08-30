@@ -1,8 +1,10 @@
 require 'java'
 
-import 'JMapReduceJob'
-import 'MapperWrapper'
-import 'ReducerWrapper'
+java_package 'org.fingertap.jmapreduce'
+
+import org.fingertap.jmapreduce.JMapReduceJob
+import org.fingertap.jmapreduce.MapperWrapper
+import org.fingertap.jmapreduce.ReducerWrapper
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text

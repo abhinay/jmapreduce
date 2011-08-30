@@ -1,10 +1,13 @@
 require 'java'
 
+java_package 'org.fingertap.jmapreduce'
+
 import java.io.IOException
 
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.mapreduce.Mapper
 
-class JMapper < org.apache.hadoop.mapreduce.Mapper
+class JMapper < Mapper
   java_signature 'void setup(org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def setup(context)
     @key = Text.new

@@ -1,6 +1,8 @@
 require 'java'
 
-import 'JsonProperty'
+java_package 'org.fingertap.jmapreduce'
+
+import org.fingertap.jmapreduce.JsonProperty
 
 class JMapReduceJob
   def setup(&blk)

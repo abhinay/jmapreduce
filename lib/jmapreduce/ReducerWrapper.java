@@ -1,3 +1,5 @@
+package org.fingertap.jmapreduce;
+
 import java.io.IOException;
 import java.util.Iterator;
 

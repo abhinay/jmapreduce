@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
-require "rubygems"
-require "bundler/setup"
+require 'rubygems'
 require 'jruby-jars'
 require 'optparse'
 require 'ostruct'

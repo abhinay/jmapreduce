@@ -2,11 +2,13 @@ require 'java'
 
 import java.io.IOException
 
+import org.apache.hadoop.io.Text
+
 class JReducer < org.apache.hadoop.mapreduce.Reducer
   java_signature 'void setup(org.apache.hadoop.mapreduce.Reducer.Context) throws IOException'
   def setup(context)
-    @key = org.apache.hadoop.io.Text.new
-    @value = org.apache.hadoop.io.Text.new
+    @key = Text.new
+    @value = Text.new
     
     conf = context.getConfiguration
     script = conf.get('jmapreduce.script.name')

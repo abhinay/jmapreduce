@@ -54,6 +54,7 @@ class JMapReduce
     require script
     input = script_input
     output = script_output
+    tmp_outputs = []
     
     @@jobs.each_with_index do |jmapreduce_job,index|
       conf.set('jmapreduce.job.index', index.to_s)
@@ -63,6 +64,7 @@ class JMapReduce
           output = script_output
         else
           output = "#{script_output}-part-#{index}"
+          tmp_outputs << output
         end
       end
       
@@ -80,6 +82,13 @@ class JMapReduce
       job.waitForCompletion(true)
       
       input = output
+    end
+    
+    # clean up
+    tmp_outputs.each do |tmp_output|
+      tmp_path = Path.new(tmp_output)
+      hdfs = tmp_path.getFileSystem(conf)
+      hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
     end
   end
 end

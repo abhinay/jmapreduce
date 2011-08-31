@@ -1,4 +1,4 @@
-import 'org.fingertap.jmapreduce.JMapReduce'
+import org.fingertap.jmapreduce.JMapReduce
 
 JMapReduce.job 'Count' do
   reduce_tasks 1

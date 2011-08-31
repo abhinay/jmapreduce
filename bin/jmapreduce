@@ -5,7 +5,7 @@ require 'optparse'
 require 'ostruct'
 require 'cgi'
 
-require File.join(File.dirname(__FILE__), '..', 'lib', 'jmapreduce', 'jrunner')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'jmapreduce', 'runner')
 
 options = OpenStruct.new
 
@@ -30,4 +30,4 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-JRunner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties).run
+Runner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties).run

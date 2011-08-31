@@ -27,7 +27,7 @@ Usage
 Example 
 -------
 
-<script src="https://bitbucket.org/abhinaymehta/jmapreduce/src/a53594ca887c/examples/wordcount.rb?embed=t"></script>
+\<script src="https://bitbucket.org/abhinaymehta/jmapreduce/src/a53594ca887c/examples/wordcount.rb?embed=t"></script>
 
 Author
 -------

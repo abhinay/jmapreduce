@@ -16,6 +16,10 @@ OptionParser.new do |opts|
     options.config = config
   end
   
+  opts.on("-l", "--libjars jar files", "comma-separated jar files to include in the classpath") do |libjars|
+    options.libjars = libjars
+  end
+  
   opts.on("-v", '--variables name=value', "Pass additional parameters to jobs") do |config|
     options.properties = config
   end
@@ -30,4 +34,4 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-Runner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties).run
+Runner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties, :libjars => options.libjars).run

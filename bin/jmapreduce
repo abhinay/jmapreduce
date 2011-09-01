@@ -24,12 +24,16 @@ OptionParser.new do |opts|
     options.jobtracker = jobtracker
   end
   
-  opts.on("-l", "--libjars jar files", "comma-separated jar files to include in the classpath") do |libjars|
+  opts.on("-l", "--libjars jar1,jar2", "comma-separated jar files to include in the classpath") do |libjars|
     options.libjars = libjars
   end
   
-  opts.on("-f", "--files files", "comma separated files to be copied to the map reduce cluster") do |files|
+  opts.on("-f", "--files file1,file2", "comma separated files to be copied to the map reduce cluster") do |files|
     options.files = files
+  end
+  
+  opts.on("-d", "--dirs dir1,dir2", "comma separated directories to be copied to the map reduce cluster") do |dirs|
+    options.dirs = dirs
   end
   
   opts.on("-v", '--variables name=value', "Pass additional parameters to jobs") do |config|
@@ -52,5 +56,6 @@ Runner.new(ARGV[0], ARGV[1], ARGV[2],
   :jobtracker => options.jobtracker,
   :properties => options.properties, 
   :libjars => options.libjars,
-  :files => options.files).run
-  
+  :files => options.files,
+  :dirs => options.dirs
+  ).run

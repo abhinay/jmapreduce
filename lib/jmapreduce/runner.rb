@@ -1,10 +1,8 @@
 class Runner
   JAVA_MAIN_CLASS = 'org.fingertap.jmapreduce.JMapReduce'
   
-  attr_reader :script, :files
-  
   def initialize(script, input, output, opts={})
-    @script = File.expand_path(File.join(File.dirname(__FILE__), script))
+    @script = script
     @input = input
     @output = output
     @opts = opts
@@ -34,7 +32,7 @@ class Runner
   end
   
   def cmd
-    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS} #{jars_args} #{file_args} #{conf_args} #{mapred_args} #{properties_args}"
+    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS} #{jars_args} #{file_args} #{conf_args} #{archived_args} #{mapred_args} #{properties_args}"
   end
   
   def jars_args
@@ -42,10 +40,6 @@ class Runner
   end
   
   def file_args
-    files = [@script]
-    @opts[:files].split(',').each do |file|
-      files << File.expand_path(File.join(File.dirname(__FILE__), file))
-    end if @opts[:files]
     "-files #{files.join(',')}"
   end
   
@@ -57,6 +51,20 @@ class Runner
     args
   end
   
+  def archived_args
+    return unless @opts[:dirs]
+    
+    archived_files = []
+    @opts[:dirs].split(',').each do |dir|
+      next unless File.directory?(dir)
+      tgz = "/tmp/jmapreduce-#{Process.pid}-#{Time.now.to_i}-#{rand(1000)}.tgz"
+      system("cd #{dir} && tar -czf #{tgz} *")
+      archived_files << "#{tgz}\##{File.basename(dir)}"
+    end
+    
+    "-archives #{archived_files.join(',')}"
+  end
+  
   def mapred_args
     "#{File.basename(@script)} #{@input} #{@output}"
   end
@@ -65,8 +73,14 @@ class Runner
     @opts[:properties] ? "#{@opts[:properties]}" : ''
   end
   
+  def files
+    ret = [@script]
+    ret += @opts[:files].split(',') if @opts[:files]
+    ret
+  end
+  
   def dirnames
-    [File.dirname(@script)]
+    files.map{ |f| File.dirname(f) }
   end
   
   def lib_jars
@@ -76,11 +90,7 @@ class Runner
       main_jar_path,
       File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'gson.jar'))
     ]
-    
-    @opts[:libjars].split(',').each do |jar|
-      jars << File.expand_path(File.join(File.dirname(__FILE__), jar))
-    end if @opts[:libjars]
-    
+    jars += @opts[:libjars].split(',') if @opts[:libjars]
     jars
   end
   

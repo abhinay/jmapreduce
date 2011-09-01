@@ -64,6 +64,14 @@ class JMapReduceJob
     @value = value
   end
   
+  def set_conf(conf)
+    @conf = conf
+  end
+  
+  def conf
+    @conf
+  end
+  
   def emit(key, value)
     @key.set(key.to_s)
     @value.set(value.to_s)

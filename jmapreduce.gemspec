@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
 
   s.authors     = ["Abhinay Mehta"]
   s.email       = "abhinay.mehta@gmail.com"
-  
-  s.add_dependency("jruby-jars")
+
+  s.add_dependency("jruby-jars", "~> 1.6")
 
   s.executables = %w[jmapreduce]
 

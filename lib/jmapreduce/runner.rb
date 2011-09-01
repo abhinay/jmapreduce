@@ -4,7 +4,7 @@ class Runner
   attr_reader :script, :files
   
   def initialize(script, input, output, opts={})
-    @script = script
+    @script = File.expand_path(File.join(File.dirname(__FILE__), script))
     @input = input
     @output = output
     @opts = opts
@@ -43,11 +43,18 @@ class Runner
   
   def file_args
     files = [@script]
+    @opts[:files].split(',').each do |file|
+      files << File.expand_path(File.join(File.dirname(__FILE__), file))
+    end if @opts[:files]
     "-files #{files.join(',')}"
   end
   
   def conf_args
-    @opts[:conf] ? "-conf #{@opts[:conf]}" : ''
+    args = ''
+    args += @opts[:conf] ? "-conf #{@opts[:conf]} " : ''
+    args += @opts[:namenode] ? "-fs #{@opts[:namenode]} " : ''
+    args += @opts[:jobtracker] ? "-jt #{@opts[:jobtracker]} " : ''
+    args
   end
   
   def mapred_args

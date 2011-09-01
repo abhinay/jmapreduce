@@ -16,8 +16,20 @@ OptionParser.new do |opts|
     options.config = config
   end
   
+  opts.on("-n", "--namenode namenode:port", "Specify a namenode") do |namenode|
+    options.namenode = namenode
+  end
+  
+  opts.on("-t", "--jobtracker jobtracker:port", "Specify a job tracker") do |jobtracker|
+    options.jobtracker = jobtracker
+  end
+  
   opts.on("-l", "--libjars jar files", "comma-separated jar files to include in the classpath") do |libjars|
     options.libjars = libjars
+  end
+  
+  opts.on("-f", "--files files", "comma separated files to be copied to the map reduce cluster") do |files|
+    options.files = files
   end
   
   opts.on("-v", '--variables name=value', "Pass additional parameters to jobs") do |config|
@@ -34,4 +46,11 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-Runner.new(ARGV[0], ARGV[1], ARGV[2], :conf => options.config, :properties => options.properties, :libjars => options.libjars).run
+Runner.new(ARGV[0], ARGV[1], ARGV[2], 
+  :conf => options.config, 
+  :namenode => options.namenode,
+  :jobtracker => options.jobtracker,
+  :properties => options.properties, 
+  :libjars => options.libjars,
+  :files => options.files).run
+  

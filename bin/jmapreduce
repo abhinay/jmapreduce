@@ -36,12 +36,12 @@ OptionParser.new do |opts|
     options.dirs = dirs
   end
   
-  opts.on("-v", '--variables name=value', "Pass additional parameters to jobs") do |config|
-    options.properties = config
+  opts.on("-v", '--variables k1=v1,k2=v2', "Pass additional parameters to jobs") do |params|
+    options.properties = params
   end
   
-  opts.on("-j", '--json {"key":"1 value"}', "Pass JSON encoded parameters to jobs") do |config|
-    options.properties = "json=#{CGI.escape(config)}"
+  opts.on("-j", '--json {"key":"1 value"}', "Pass JSON encoded parameters to jobs") do |json|
+    options.json = "json=#{CGI.escape(json)}"
   end
   
   opts.on_tail("-h", "--help", "Show this message") do
@@ -54,7 +54,8 @@ Runner.new(ARGV[0], ARGV[1], ARGV[2],
   :conf => options.config, 
   :namenode => options.namenode,
   :jobtracker => options.jobtracker,
-  :properties => options.properties, 
+  :properties => options.properties,
+  :json => options.json,
   :libjars => options.libjars,
   :files => options.files,
   :dirs => options.dirs

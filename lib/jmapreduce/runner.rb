@@ -70,7 +70,11 @@ class Runner
   end
   
   def properties_args
-    @opts[:properties] ? "#{@opts[:properties]}" : ''
+    return '' if @opts[:properties].nil? && @opts[:json].nil?
+    properties = []
+    properties << @opts[:properties] if @opts[:properties]
+    properties << @opts[:json] if @opts[:json]
+    properties.join(',')
   end
   
   def files

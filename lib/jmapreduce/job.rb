@@ -78,15 +78,20 @@ class JMapReduceJob
     @context.write(@key, @value)
   end
   
-  def set_properties(property)
-    return unless property
+  def set_properties(properties)
+    return unless properties
     
-    key,value = *property.split('=')
-    if key == 'json'
-      @properties = JsonProperty.parse(value)
-    else
-      @properties ||= {}
-      @properties[key] = value
+    @properties = {}
+    props = properties.split(',')
+    props.each do |property|
+      key,value = *property.split('=')
+      if key == 'json'
+        JsonProperty.parse(value).each do |(k,v)|
+          @properties[k] = v
+        end
+      else
+        @properties[key] = value
+      end
     end
   end
   

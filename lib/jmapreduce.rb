@@ -8,6 +8,8 @@ import org.fingertap.jmapreduce.ReducerWrapper
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
+import org.apache.hadoop.io.IntWritable
+
 import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.util.GenericOptionsParser
@@ -74,8 +76,9 @@ class JMapReduce
       job.setJarByClass(JMapReduce.java_class)
       job.setMapperClass(MapperWrapper.java_class)
       job.setReducerClass(ReducerWrapper.java_class)
+      
       job.setOutputKeyClass(Text.java_class)
-      job.setOutputValueClass(Text.java_class)
+      job.setOutputValueClass(jmapreduce_job.value_class)
       
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))

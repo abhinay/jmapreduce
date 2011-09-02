@@ -9,7 +9,7 @@ module Common
     
     require script
     @job = JMapReduce.jobs[job_index]
-    @job.set_context(context, @key, @value)
+    @job.set_context(context)
     @job.set_conf(conf)
     @job.get_setup.call if @job.setup_exists
     @job.set_properties(conf.get('jmapreduce.property'))

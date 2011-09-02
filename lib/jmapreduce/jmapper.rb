@@ -16,7 +16,7 @@ class JMapper < Mapper
     super
   end
   
-  java_signature 'void map(java.lang.Object, org.apache.hadoop.io.Text, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
+  java_signature 'void map(java.lang.Object, java.lang.Object, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def map(key, value, context)
     value = value.to_s
     key,value = *value.split("\t") if value.include?("\t")

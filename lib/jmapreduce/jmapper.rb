@@ -1,4 +1,5 @@
 require 'java'
+require File.join(File.dirname(__FILE__), 'common')
 
 java_package 'org.fingertap.jmapreduce'
 
@@ -8,22 +9,11 @@ import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapreduce.Mapper
 
 class JMapper < Mapper
+  include Common
+  
   java_signature 'void setup(org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def setup(context)
-    @key = Text.new
-    @value = Text.new
-    
-    conf = context.getConfiguration
-    script = conf.get('jmapreduce.script.name')
-    job_index = conf.get('jmapreduce.job.index').to_i
-    
-    require script
-    job = JMapReduce.jobs[job_index]
-    job.set_context(context, @key, @value)
-    job.set_conf(conf)
-    job.get_setup.call if job.setup_exists
-    job.set_properties(conf.get('jmapreduce.property'))
-    @mapper = job.mapper
+    super
   end
   
   java_signature 'void map(java.lang.Object, org.apache.hadoop.io.Text, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
@@ -31,13 +21,13 @@ class JMapper < Mapper
     value = value.to_s
     key,value = *value.split("\t") if value.include?("\t")
     
-    if @mapper.nil?
+    if @job.mapper.nil?
       @key.set(key.to_s)
       @value.set(value.to_s)
       context.write(@key, @value)
       return
     end
     
-    @mapper.call(key, value)
+    @job.mapper.call(key, value)
   end
 end

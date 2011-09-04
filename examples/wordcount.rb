@@ -12,7 +12,7 @@ JMapReduce.job 'Count' do
   reduce do |key, values|
     sum = 0
     values.each {|v| sum += v }
-    emit(key, sum)
+    emit(key, {'sum' => sum})
   end
 end
 
@@ -22,7 +22,7 @@ JMapReduce.job "Histogram" do
   end
   
   map do |word, count|
-    range = RANGES.find {|range| range.include?(count) }
+    range = RANGES.find {|range| range.include?(count['sum']) }
     emit("#{range.first.to_s.rjust(5,'0')}-#{range.last.to_s.rjust(5,'0')}", 1)
   end
   

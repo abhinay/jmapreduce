@@ -2,6 +2,7 @@ require 'java'
 
 java_package 'org.fingertap.jmapreduce'
 
+import org.fingertap.jmapreduce.ValuePacker
 import org.fingertap.jmapreduce.JsonProperty
 
 import org.apache.hadoop.io.Text
@@ -13,7 +14,6 @@ class JMapReduceJob
   def initialize
     @key = Text.new
     @value = Text.new
-    @text_value = Text.new
   end
   
   def setup(&blk)
@@ -83,13 +83,8 @@ class JMapReduceJob
   
   def emit(key, value)
     @key.set(key.to_s)
-    if value.is_a?(String)
-      @text_value.set(value)
-      @context.write(@key, @text_value)
-    else
-      set_value(value)
-      @context.write(@key, @value)
-    end
+    @value.set(pack(value))
+    @context.write(@key, @value)
   end
   
   def set_properties(properties)
@@ -113,35 +108,32 @@ class JMapReduceJob
     @properties[key] if @properties
   end
   
-  def set_value(value)
-    case @value_type
-    when :int, :float then @value.set(value)
-    when :array then @value.set(JsonProperty.array_to_json(value.map { |v| v.to_s }.to_java(:string)))
-    when :hash then @value.set(JsonProperty.hash_to_json(java.util.HashMap.new(value)))
-    else @value.set(value.to_s)
+  def pack(value)
+    case value
+    when Hash then return ValuePacker.pack(value)
+    when Array then return ValuePacker.pack(value)
+    else return ValuePacker.pack(value.to_java)
     end
   end
   
-  def get_value(value)
-    case @value_type
-    when :int, :float then return value.get
-    when :array then return JsonProperty.array_from_json(value.to_s).to_a
-    when :hash then return JsonProperty.hash_from_json(value.to_s)
-    else return value.to_s
+  def unpack(value)
+    obj = ValuePacker.unpack(value.to_s)
+    case obj
+    when java.util.ArrayList then
+      return obj.map { |v|
+        if v.isIntegerType
+          v.intValue
+        elsif v.isFloatType
+          v.floatValue
+        elsif v.isRawType
+          v.asString
+        elsif v.isBooleanType
+          v.asBoolean
+        else
+          v
+        end
+      }
+    else return obj
     end
-  end
-  
-  def value_type(type)
-    @value_type = type
-    case @value_type
-    when :int then @value = IntWritable.new
-    when :float then @value = FloatWritable.new
-    when :string, :array, :hash then @value = @value
-    else raise "value type not recognised: #{type}"
-    end
-  end
-  
-  def value_class
-    @value.java_class
   end
 end

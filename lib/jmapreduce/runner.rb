@@ -92,7 +92,9 @@ class Runner
       JRubyJars.core_jar_path,
       JRubyJars.stdlib_jar_path,
       main_jar_path,
-      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'gson.jar'))
+      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'gson.jar')),
+      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'javassist.jar')),
+      File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'vendors', 'msgpack.jar'))
     ]
     jars += @opts[:libjars].split(',') if @opts[:libjars]
     jars

@@ -78,7 +78,7 @@ class JMapReduce
       job.setReducerClass(ReducerWrapper.java_class)
       
       job.setOutputKeyClass(Text.java_class)
-      job.setOutputValueClass(jmapreduce_job.value_class)
+      job.setOutputValueClass(Text.java_class)
       
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))
@@ -91,7 +91,7 @@ class JMapReduce
     tmp_outputs.each do |tmp_output|
       tmp_path = Path.new(tmp_output)
       hdfs = tmp_path.getFileSystem(conf)
-      hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
+      # hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
     end
   end
 end

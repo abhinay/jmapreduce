@@ -25,6 +25,6 @@ class JReducer < Reducer
       return
     end
     
-    @job.reducer.call(key, values.map{ |v| @job.get_value(v) })
+    @job.reducer.call(key, values.map{ |v| @job.unpack(v) })
   end
 end

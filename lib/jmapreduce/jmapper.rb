@@ -28,6 +28,6 @@ class JMapper < Mapper
       return
     end
     
-    @job.mapper.call(key, value)
+    @job.mapper.call(key, @job.unpack(value))
   end
 end

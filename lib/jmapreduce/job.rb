@@ -110,30 +110,44 @@ class JMapReduceJob
   
   def pack(value)
     case value
-    when Hash then return ValuePacker.pack(value)
-    when Array then return ValuePacker.pack(value)
-    else return ValuePacker.pack(value.to_java)
+    when Integer, Float, String, Array then return ValuePacker.pack(value)
+    when Symbol then return ValuePacker.pack(value.to_s)
+    when Hash then 
+      h = value.inject({}) do |h, (k,v)|
+        k = k.to_s if k.is_a?(Symbol)
+        h[k] = v
+        h
+      end
+      return ValuePacker.pack(h)
+    else raise "Unknown value type #{value.class}. Only following types allowed: Integer, Float, String, Symbol, Array and Hash"
     end
   end
   
   def unpack(value)
     obj = ValuePacker.unpack(value.to_s)
     case obj
+    when java.util.HashMap then
+      return obj.inject({}) do |h, (k,v)|
+        h[ruby_value(k)] = ruby_value(v)
+        h
+      end
     when java.util.ArrayList then
-      return obj.map { |v|
-        if v.isIntegerType
-          v.intValue
-        elsif v.isFloatType
-          v.floatValue
-        elsif v.isRawType
-          v.asString
-        elsif v.isBooleanType
-          v.asBoolean
-        else
-          v
-        end
-      }
+      return obj.map { |v| ruby_value(v) }
     else return obj
+    end
+  end
+  
+  def ruby_value(v)
+    if v.isIntegerType
+      return v.intValue
+    elsif v.isFloatType
+      return v.floatValue
+    elsif v.isRawType
+      return v.asString
+    elsif v.isBooleanType
+      return v.asBoolean
+    else
+      return v
     end
   end
 end

@@ -91,7 +91,7 @@ class JMapReduce
     tmp_outputs.each do |tmp_output|
       tmp_path = Path.new(tmp_output)
       hdfs = tmp_path.getFileSystem(conf)
-      # hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
+      hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
     end
   end
 end

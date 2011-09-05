@@ -138,16 +138,21 @@ class JMapReduceJob
   end
   
   def ruby_value(v)
-    if v.isIntegerType
-      return v.intValue
-    elsif v.isFloatType
-      return v.floatValue
-    elsif v.isRawType
-      return v.asString
-    elsif v.isBooleanType
-      return v.asBoolean
-    else
-      return v
-    end
+    return v.intValue if v.isIntegerType
+    return v.floatValue if v.isFloatType
+    return v.asString if v.isRawType
+    return v.asBoolean if v.isBooleanType
+    return nil if v.isNil
+    
+    return v.asMap.inject({}) do |h, (k,v)|
+      h[ruby_value(k)] = ruby_value(v)
+      h
+    end if v.isMapType
+    
+    return v.asArray.map do |v| 
+      ruby_value(v) 
+    end if v.isArrayType
+    
+    return v
   end
 end

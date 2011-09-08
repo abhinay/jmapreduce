@@ -59,6 +59,9 @@ class JMapReduce
     tmp_outputs = []
     
     @@jobs.each_with_index do |jmapreduce_job,index|
+      jmapreduce_job.set_conf(conf)
+      jmapreduce_job.set_properties(conf.get('jmapreduce.property'))
+      
       conf.set('jmapreduce.job.index', index.to_s)
       
       if @@jobs.size > 1
@@ -82,6 +85,8 @@ class JMapReduce
       
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))
+      
+      jmapreduce_job.get_customize_job_block.call(job) if jmapreduce_job.get_customize_job_block
       job.waitForCompletion(true)
       
       input = output

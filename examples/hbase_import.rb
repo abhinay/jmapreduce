@@ -10,11 +10,11 @@ import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
 JMapReduce.job 'Count' do
+  reduce_tasks 1
   
   customize_job do |job|
     hbase_conf = HBaseConfiguration.create(conf)
     hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
-    job.setConfiguration(hbase_conf)
     
     table = HTable.new(hbase_conf, 'ask_pt_keywords_fake')
     job.setReducerClass(PutSortReducer.java_class)
@@ -34,7 +34,7 @@ JMapReduce.job 'Count' do
   
   map do |key, value|
     row = [key]
-    row += "value".split("\t")
+    row += value.split("\t")
     keyword = row[@headers.index('keyword')]
     adgroup_id = row[@headers.index('adgroup_id')]
     
@@ -46,9 +46,6 @@ JMapReduce.job 'Count' do
       qualifier = "#{adgroup_id}:#{column}"
       put.add(@family, qualifier.to_java_bytes, @ts, row[@headers.index(column)].to_java_bytes)
     end
-    
-    # rowKey = ImmutableBytesWritable.new(keyBytes)
-    # put = Put.new(rowKey.copyBytes)
     
     # kv = KeyValue.new(
     #   keyBytes, @family, qualifier.to_java_bytes, 

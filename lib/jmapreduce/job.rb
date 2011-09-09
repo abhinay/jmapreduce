@@ -69,6 +69,10 @@ class JMapReduceJob
     self.instance_eval(&blk)
   end
   
+  def context
+    @context
+  end
+  
   def set_context(context)
     @context = context
   end

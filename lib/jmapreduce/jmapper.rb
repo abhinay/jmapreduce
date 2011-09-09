@@ -19,7 +19,12 @@ class JMapper < Mapper
   java_signature 'void map(java.lang.Object, java.lang.Object, org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
   def map(key, value, context)
     value = value.to_s
-    key,value = *value.split("\t") if value.include?("\t")
+    
+    if value.include?("\t")
+      tokens = value.split("\t")
+      key = tokens.first
+      value = tokens[1..-1].join("\t")
+    end
     
     if @job.mapper.nil?
       @key.set(key.to_s)

@@ -10,20 +10,28 @@ import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
 JMapReduce.job 'Count' do
-  reduce_tasks 1
+  reduce_tasks 0
   
   customize_job do |job|
-    hbase_conf = HBaseConfiguration.create(conf)
-    hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
+    # Attempt 1
+    # hbase_conf = HBaseConfiguration.create(conf)
+    # hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
+    # 
+    # table = HTable.new(hbase_conf, 'ask_pt_keywords_fake')
+    # job.setReducerClass(PutSortReducer.java_class)
+    # job.setMapOutputKeyClass(ImmutableBytesWritable.java_class)
+    # job.setMapOutputValueClass(Put.java_class)
+    # HFileOutputFormat.configureIncrementalLoad(job, table)
+    # 
+    # TableMapReduceUtil.addDependencyJars(job)
+    # TableMapReduceUtil.addDependencyJars(job.getConfiguration)
     
-    table = HTable.new(hbase_conf, 'ask_pt_keywords_fake')
-    job.setReducerClass(PutSortReducer.java_class)
-    job.setMapOutputKeyClass(ImmutableBytesWritable.java_class)
-    job.setMapOutputValueClass(Put.java_class)
-    HFileOutputFormat.configureIncrementalLoad(job, table)
-    
-    TableMapReduceUtil.addDependencyJars(job)
-    TableMapReduceUtil.addDependencyJars(job.getConfiguration)
+    # Attempt 2
+    # hbase_conf = HBaseConfiguration.create(conf)
+    # hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
+    # TableMapReduceUtil.addDependencyJars(job)
+    # TableMapReduceUtil.addDependencyJars(hbase_conf)
+    # TableMapReduceUtil.initTableReducerJob('ask_pt_keywords_fake', nil, job)
   end
   
   setup do
@@ -33,8 +41,7 @@ JMapReduce.job 'Count' do
   end
   
   map do |key, value|
-    row = [key]
-    row += value.split("\t")
+    row = [key] + value.split("\t")
     keyword = row[@headers.index('keyword')]
     adgroup_id = row[@headers.index('adgroup_id')]
     
@@ -46,11 +53,6 @@ JMapReduce.job 'Count' do
       qualifier = "#{adgroup_id}:#{column}"
       put.add(@family, qualifier.to_java_bytes, @ts, row[@headers.index(column)].to_java_bytes)
     end
-    
-    # kv = KeyValue.new(
-    #   keyBytes, @family, qualifier.to_java_bytes, 
-    #   @ts, KeyValue::Type::Put, stat.to_java_bytes)
-    # put.add(kv)
     
     context.write(rowKey, put)
   end

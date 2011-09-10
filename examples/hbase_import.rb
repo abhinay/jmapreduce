@@ -1,12 +1,8 @@
 import org.fingertap.jmapreduce.JMapReduce
 
-import org.apache.hadoop.hbase.KeyValue
 import org.apache.hadoop.hbase.client.Put
-import org.apache.hadoop.hbase.client.HTable
 import org.apache.hadoop.hbase.HBaseConfiguration
-import org.apache.hadoop.hbase.mapreduce.PutSortReducer
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
-import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
 JMapReduce.job "Calculating adgroup stats for keywords for #{JMapReduce.property('client')}" do

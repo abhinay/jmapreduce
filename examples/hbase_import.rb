@@ -9,6 +9,45 @@ import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
+JMapReduce.job "Calculating adgroup stats for keywords" do
+  map_tasks 20
+  reduce_tasks 5
+  
+  setup do
+    HEADERS = property('csv_headers').split(":")
+  end
+  
+  map do |key, value|
+    row = [key] + value.split("\t")
+    keyword = row[HEADERS.index('keyword')]
+    adgroup_id = row[HEADERS.index('adgroup_id')]
+    
+    stats = %w(clicks cpc ctr avg_position quality_score).inject({}) do |h,column|
+      h[column] = row[HEADERS.index(column)]
+      h
+    end
+    
+    emit(keyword, { adgroup_id => stats })
+  end
+  
+  reduce do |keyword, values|
+    keyword_stats = {}
+    stat_rows = {}
+    max_clicks = -1
+    
+    values.each do |adgroup_stats|
+      adgroup_stats.each do |(adgroup_id,stats)|
+        keyword_stats = stats if stats['clicks'].to_i > max_clicks
+        stats.keys.each do |key|
+          stat_rows["#{adgroup_id}:#{key}"] = stats[key]
+        end
+      end
+    end
+    
+    emit(keyword, keyword_stats.merge(stat_rows))
+  end
+end
+
 JMapReduce.job "Keywords bulk import" do
   reduce_tasks 0
   
@@ -31,18 +70,14 @@ JMapReduce.job "Keywords bulk import" do
     @headers = property('csv_headers').split(':')
   end
   
-  map do |key, value|
-    row = [key] + value.split("\t")
-    keyword = row[@headers.index('keyword')]
-    adgroup_id = row[@headers.index('adgroup_id')]
-    
+  map do |keyword, stats|
     keyBytes = keyword.to_java_bytes
     rowKey = ImmutableBytesWritable.new(keyBytes)
     put = Put.new(keyBytes)
     
-    stats = %w(clicks cpc ctr avg_position quality_score).each do |column|
-      qualifier = "#{adgroup_id}:#{column}"
-      put.add(@family, qualifier.to_java_bytes, @ts, row[@headers.index(column)].to_java_bytes)
+    stats.each do |(qualifier,stat)|
+      java.lang.System.out.println("Qualifier: #{qualifier}, Stat: #{stat}")
+      put.add(@family, qualifier.to_java_bytes, @ts, stat.to_s.to_java_bytes)
     end
     
     context.write(rowKey, put)

@@ -9,7 +9,7 @@ import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
-JMapReduce.job "Calculating adgroup stats for keywords" do
+JMapReduce.job "Calculating adgroup stats for keywords for #{JMapReduce.property('client')}" do
   map_tasks 20
   reduce_tasks 5
   
@@ -48,7 +48,7 @@ JMapReduce.job "Calculating adgroup stats for keywords" do
   end
 end
 
-JMapReduce.job "Keywords bulk import" do
+JMapReduce.job "Keywords bulk import for #{JMapReduce.property('client')}" do
   reduce_tasks 0
   
   custom_job do |conf|
@@ -76,7 +76,6 @@ JMapReduce.job "Keywords bulk import" do
     put = Put.new(keyBytes)
     
     stats.each do |(qualifier,stat)|
-      java.lang.System.out.println("Qualifier: #{qualifier}, Stat: #{stat}")
       put.add(@family, qualifier.to_java_bytes, @ts, stat.to_s.to_java_bytes)
     end
     
@@ -86,6 +85,6 @@ end
 
 __END__
 
-mandy-rm /tmp/output -c ../cardwall-alerts/config/production/hadoop_cluster.xml && ./bin/jmapreduce examples/hbase_import.rb /user/hive/warehouse/ask_keywords/dated=2011-09-06/client=ask_pt /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords -c ../cardwall-alerts/config/production/hadoop_cluster.xml
+mandy-rm /tmp/output -c ../cardwall-alerts/config/production/hadoop_cluster.xml && ./bin/jmapreduce examples/hbase_import.rb /user/hive/warehouse/ask_keywords/dated=2011-09-06/client=ask_pt /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords,client=ask_pt -c ../cardwall-alerts/config/production/hadoop_cluster.xml
 
-rm -rf /tmp/output* && ./bin/jmapreduce examples/hbase_import.rb /Users/abhinay/Desktop/data.tsv /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords
+rm -rf /tmp/output* && ./bin/jmapreduce examples/hbase_import.rb /Users/abhinay/Desktop/data.tsv /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords,client=ask_pt

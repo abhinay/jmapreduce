@@ -2,6 +2,7 @@ require 'java'
 
 java_package 'org.fingertap.jmapreduce'
 
+import org.fingertap.jmapreduce.JsonProperty
 import org.fingertap.jmapreduce.JMapReduceJob
 import org.fingertap.jmapreduce.MapperWrapper
 import org.fingertap.jmapreduce.ReducerWrapper
@@ -31,6 +32,28 @@ class JMapReduce
     job.set_mapreduce(blk)
   end
   
+  def self.set_properties(properties)
+    return unless properties
+    
+    @@properties = {}
+    props = properties.split(',')
+    props.each do |property|
+      key,value = *property.split('=')
+      if key == 'json'
+        JsonProperty.parse(value).each do |(k,v)|
+          @@properties[k] = v
+        end
+      else
+        @@properties[key] = value
+      end
+    end
+  end
+  
+  def self.property(key)
+    @@properties[key] if @@properties
+  end
+  
+  
   java_signature 'void main(String[])'
   def self.main(args)
     conf = Configuration.new
@@ -53,6 +76,7 @@ class JMapReduce
         end
       end
     end
+    set_properties(conf.get('jmapreduce.property'))
     
     require script
     input = script_input

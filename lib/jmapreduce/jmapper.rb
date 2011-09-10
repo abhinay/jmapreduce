@@ -7,6 +7,8 @@ import java.io.IOException
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapreduce.Mapper
 
+import org.fingertap.jmapreduce.JMapReduce
+
 class JMapper < Mapper
   
   java_signature 'void setup(org.apache.hadoop.mapreduce.Mapper.Context) throws IOException'
@@ -17,6 +19,7 @@ class JMapper < Mapper
     conf = context.getConfiguration
     script = conf.get('jmapreduce.script.name')
     job_index = conf.get('jmapreduce.job.index').to_i
+    JMapReduce.set_properties(conf.get('jmapreduce.property'))
     
     require script
     @job = JMapReduce.jobs[job_index]

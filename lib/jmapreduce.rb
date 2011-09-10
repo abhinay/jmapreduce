@@ -53,7 +53,6 @@ class JMapReduce
     @@properties[key] if @@properties
   end
   
-  
   java_signature 'void main(String[])'
   def self.main(args)
     conf = Configuration.new
@@ -73,10 +72,10 @@ class JMapReduce
       (3..(otherArgs.size-1)).each do |index|
         if otherArgs[index].include?('=')
           conf.set('jmapreduce.property', otherArgs[index])
+          set_properties(otherArgs[index])
         end
       end
     end
-    set_properties(conf.get('jmapreduce.property'))
     
     require script
     input = script_input
@@ -107,11 +106,9 @@ class JMapReduce
       end
       
       job.setJarByClass(JMapReduce.java_class)
-      job.setInputFormatClass(TextInputFormat.java_class)
+      job.setMapperClass(MapperWrapper.java_class)
+      job.setReducerClass(ReducerWrapper.java_class)
       job.setNumReduceTasks(jmapreduce_job.num_of_reduce_tasks)
-      
-      job.setMapperClass(MapperWrapper.java_class) if jmapreduce_job.mapper
-      job.setReducerClass(ReducerWrapper.java_class) if jmapreduce_job.reducer
       
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))

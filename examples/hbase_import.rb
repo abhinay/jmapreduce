@@ -9,29 +9,20 @@ import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.HFileOutputFormat
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
-JMapReduce.job 'Count' do
+JMapReduce.job "Keywords bulk import" do
   reduce_tasks 0
   
-  customize_job do |job|
-    # Attempt 1
-    # hbase_conf = HBaseConfiguration.create(conf)
-    # hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
-    # 
-    # table = HTable.new(hbase_conf, 'ask_pt_keywords_fake')
-    # job.setReducerClass(PutSortReducer.java_class)
-    # job.setMapOutputKeyClass(ImmutableBytesWritable.java_class)
-    # job.setMapOutputValueClass(Put.java_class)
-    # HFileOutputFormat.configureIncrementalLoad(job, table)
-    # 
-    # TableMapReduceUtil.addDependencyJars(job)
-    # TableMapReduceUtil.addDependencyJars(job.getConfiguration)
+  custom_job do |conf|
+    hbase_conf = HBaseConfiguration.create(conf)
+    hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
+    job = Job.new(hbase_conf, "#{property('client')} keywords bulk import")
+
+    TableMapReduceUtil.initTableReducerJob(property('table_name'), nil, job)
+    TableMapReduceUtil.addDependencyJars(job)
+    TableMapReduceUtil.addDependencyJars(job.getConfiguration)
     
-    # Attempt 2
-    # hbase_conf = HBaseConfiguration.create(conf)
-    # hbase_conf.set('hbase.zookeeper.quorum', 'hbase-master.hadoop.forward.co.uk')
-    # TableMapReduceUtil.addDependencyJars(job)
-    # TableMapReduceUtil.addDependencyJars(hbase_conf)
-    # TableMapReduceUtil.initTableReducerJob('ask_pt_keywords_fake', nil, job)
+    job.setMapOutputValueClass(Put.java_class)
+    job
   end
   
   setup do
@@ -60,4 +51,6 @@ end
 
 __END__
 
-./bin/jmapreduce examples/hbase_import.rb /user/hive/warehouse/ask_keywords/dated=2011-09-06/client=ask_pt /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=hbase_test_import -c ../cardwall-alerts/config/production/hadoop_cluster.xml
+mandy-rm /tmp/output -c ../cardwall-alerts/config/production/hadoop_cluster.xml && ./bin/jmapreduce examples/hbase_import.rb /user/hive/warehouse/ask_keywords/dated=2011-09-06/client=ask_pt /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords -c ../cardwall-alerts/config/production/hadoop_cluster.xml
+
+rm -rf /tmp/output* && ./bin/jmapreduce examples/hbase_import.rb /Users/abhinay/Desktop/data.tsv /tmp/output -l /Users/abhinay/tools/hbase-0.90.3-cdh3u1/hbase-0.90.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/zookeeper-3.3.3-cdh3u1.jar,/Users/abhinay/tools/hbase-0.90.3-cdh3u1/lib/guava-r06.jar -v csv_headers=account:campaign:ad_group:keyword_id:keyword:match_type:status:first_page_bid:quality_score:distribution:max_cpc:destination_url:ad_group_status:campaign_status:currency_code:impressions:clicks:ctr:cpc:cost:avg_position:account_id:campaign_id:adgroup_id,table_name=abs_test_keywords

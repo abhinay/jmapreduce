@@ -85,12 +85,12 @@ class JMapReduceJob
     @conf
   end
   
-  def customize_job(&blk)
-    @customize_job = blk
+  def custom_job(&blk)
+    @custom_job = blk
   end
   
-  def get_customize_job_block
-    @customize_job
+  def get_custom_job
+    @custom_job
   end
   
   def emit(key, value)

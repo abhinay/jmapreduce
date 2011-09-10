@@ -14,6 +14,7 @@ import org.apache.hadoop.mapreduce.Job
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.util.GenericOptionsParser
 
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
 
@@ -73,22 +74,25 @@ class JMapReduce
         end
       end
       
-      job = Job.new(conf, jmapreduce_job.name)
-      job.setNumReduceTasks(jmapreduce_job.num_of_reduce_tasks)
+      if jmapreduce_job.get_custom_job
+        job = jmapreduce_job.get_custom_job.call(conf)
+      else
+        job = Job.new(conf, jmapreduce_job.name)
+        job.setOutputKeyClass(Text.java_class)
+        job.setOutputValueClass(Text.java_class)
+      end
       
       job.setJarByClass(JMapReduce.java_class)
-      job.setMapperClass(MapperWrapper.java_class)
-      job.setReducerClass(ReducerWrapper.java_class)
+      job.setInputFormatClass(TextInputFormat.java_class)
+      job.setNumReduceTasks(jmapreduce_job.num_of_reduce_tasks)
       
-      job.setOutputKeyClass(Text.java_class)
-      job.setOutputValueClass(Text.java_class)
+      job.setMapperClass(MapperWrapper.java_class) if jmapreduce_job.mapper
+      job.setReducerClass(ReducerWrapper.java_class) if jmapreduce_job.reducer
       
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))
       
-      jmapreduce_job.get_customize_job_block.call(job) if jmapreduce_job.get_customize_job_block
       job.waitForCompletion(true)
-      
       input = output
     end
     

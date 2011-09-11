@@ -1,7 +1,12 @@
 import org.fingertap.jmapreduce.JMapReduce
 
 import org.apache.hadoop.hbase.client.Put
+import org.apache.hadoop.hbase.client.HBaseAdmin
+
+import org.apache.hadoop.hbase.HTableDescriptor
+import org.apache.hadoop.hbase.HColumnDescriptor
 import org.apache.hadoop.hbase.HBaseConfiguration
+
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil
 
@@ -58,6 +63,15 @@ JMapReduce.job "Keywords bulk import for #{JMapReduce.property('client')}" do
     
     job.setMapOutputValueClass(Put.java_class)
     job
+  end
+  
+  before_job do |job|
+    hba = HBaseAdmin.new(job.getConfiguration)
+    unless hba.tableExists(property('table_name'))
+      ht = HTableDescriptor.new("fab_abs")
+      ht.addFamily(HColumnDescriptor.new("stats"))
+      hba.createTable(ht)
+    end
   end
   
   setup do

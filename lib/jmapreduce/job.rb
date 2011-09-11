@@ -89,8 +89,16 @@ class JMapReduceJob
     @custom_job = blk
   end
   
+  def before_job(&blk)
+    @before_job = blk
+  end
+  
   def get_custom_job
     @custom_job
+  end
+  
+  def before_job_hook
+    @before_job
   end
   
   def emit(key, value)

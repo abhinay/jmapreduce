@@ -113,6 +113,7 @@ class JMapReduce
       FileInputFormat.addInputPath(job, Path.new(input))
       FileOutputFormat.setOutputPath(job, Path.new(output))
       
+      jmapreduce_job.before_job_hook.call(job) if jmapreduce_job.before_job_hook
       job.waitForCompletion(true)
       input = output
     end

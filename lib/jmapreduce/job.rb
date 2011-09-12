@@ -125,7 +125,7 @@ class JMapReduceJob
   end
   
   def property(key)
-    @properties[key] if @properties
+    @properties[key.to_s] if @properties
   end
   
   def pack(value)

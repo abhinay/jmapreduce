@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
     lib/jmapreduce/runner.rb
     release/jmapreduce.jar
     vendors/gson.jar
+    vendors/javassist.jar
+    vendors/msgpack.jar
     examples/alice.txt
     examples/wordcount.rb
   ]

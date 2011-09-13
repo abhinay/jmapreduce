@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://name-node.address:fs-port/</value>
+  </property>
+  <property>
+    <name>mapred.job.tracker</name>
+    <value>job.tracker.address:job-tracker-port</value>
+  </property>
+</configuration>

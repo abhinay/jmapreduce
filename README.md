@@ -6,17 +6,17 @@ JMapReduce provides a simple [mandy](http://github.com/forward/mandy "Mandy") li
 Install
 -------
 
-> gem install jmapreduce
+> $ gem install jmapreduce
 
 Usage
 -----
 
 1. Install Hadoop and set HADOOP_HOME env variable
 2. To run a jmapreduce script:
-> jmapreduce examples/wordcount.rb examples/alice.txt /tmp/jmapreduce-output
+> $ jmapreduce examples/wordcount.rb examples/alice.txt /tmp/jmapreduce-output
 
 3. For full list of options, including how to run your scripts against a Hadoop cluster run:
-> jmapreduce -h
+> $ jmapreduce -h
 
 Some Rules
 ----------

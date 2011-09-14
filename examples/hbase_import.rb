@@ -31,17 +31,19 @@ JMapReduce.job "HBase bulk import job" do
     row = "#{key}\t#{value}".split("\t")
     
     row_key = row[0].to_java_bytes
-    someColumn = row[1].to_java_bytes
-    someOtherColumn = row[2].to_java_bytes
+    someColumnValue = row[1].to_java_bytes
+    someOtherColumnValue = row[2].to_java_bytes
     
     put = Put.new(row_key)
-    put.add(@family, "columnName".to_java_bytes, @ts, someColumn)
-    put.add(@family, "anotherColumnName".to_java_bytes, @ts, someOtherColumn)
+    put.add(@family, "someColumn".to_java_bytes, @ts, someColumnValue)
+    put.add(@family, "someOtherColumn".to_java_bytes, @ts, someOtherColumnValue)
     
     context.write(ImmutableBytesWritable.new(row_key), put)
   end
 end
 
 __END__
+
+To run:
 
 ./bin/jmapreduce examples/hbase_import.rb /path/to/tsv/file /output/path -l $HBASE_HOME/hbase.jar,$HBASE_HOME/lib/zookeeper.jar,$HBASE_HOME/lib/guava.jar -v table_name=test_import_table

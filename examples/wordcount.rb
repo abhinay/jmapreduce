@@ -39,4 +39,6 @@ end
 
 __END__
 
+To run:
+
 ./bin/jmapreduce examples/wordcount.rb examples/alice.txt /tmp/output

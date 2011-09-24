@@ -162,6 +162,9 @@ Example Hadoop Conf XML File
       </property>
     </configuration>
 
+You can pass an XML file in the command line to run your jobs against your chosen Hadoop cluster:
+> jmapreduce examples/wordcount.rb /path/to/hdfs/input /path/to/hdfs/output -c examples/hadoop\_cluster\_conf\_example.xml
+
 Author
 -------
 

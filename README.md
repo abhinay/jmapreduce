@@ -62,6 +62,10 @@ Example
         emit(range, '|'*(total/20))
       end
     end
+
+To run the above example, run:
+> jmapreduce examples/wordcount.rb examples/alice.txt /tmp/alice-out
+
     
 Using Java classes Example 
 --------------------------
@@ -88,6 +92,9 @@ Using Java classes Example
       end
     end
     
+To run the above example, run:
+> jmapreduce examples/wordcount.rb examples/alice.txt /tmp/alice-java-out
+
 Running a custom org.apache.hadoop.mapreduce.Job Example
 --------------------------------------------------------
 

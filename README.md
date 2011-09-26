@@ -1,7 +1,7 @@
 JMapReduce
 ==========
 
-JMapReduce provides a simple [mandy](http://github.com/forward/mandy "Mandy") like DSL to run map/reduce jobs on Hadoop in the JVM via JRuby. Because it runs in the JVM, you have access to all the Java objects provided to the Map/Reduce jobs at runtime and can leverage other Java libraries inside your jobs.
+JMapReduce provides a simple DSL to run map/reduce jobs on Hadoop in the JVM via JRuby. Because it runs in the JVM, you have access to all the Java objects provided to the Map/Reduce jobs at runtime and can leverage other Java libraries inside your jobs.
 
 Install
 -------

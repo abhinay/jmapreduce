@@ -13,7 +13,7 @@ Usage
 
 1. Install Hadoop and set HADOOP_HOME env variable
 2. To run a jmapreduce script:
-> $ jmapreduce /path/to/script.rb /path/to/input /path/to/output
+> $ jmapreduce [path-to]/script.rb [path-to]/input [path-to]/output
 
 3. For full list of options, including how to run your scripts against a Hadoop cluster run:
 > $ jmapreduce -h
@@ -170,7 +170,9 @@ You can pass an XML file in the command line to run your jobs against your chose
 Todo list
 ---------
 
+* Rdoc
 * A way to package and distribute gems
+* Expose Key/Value separator variable
 
 Author
 -------

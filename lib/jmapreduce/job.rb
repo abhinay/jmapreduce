@@ -12,57 +12,57 @@ import org.apache.hadoop.io.LongWritable
 
 class JMapReduceJob
   def initialize
-    @key = Text.new
-    @value = Text.new
+    @jmapreduce_job_key = Text.new
+    @jmapreduce_job_value = Text.new
   end
   
   def setup(&blk)
-    @setup = blk
+    @jmapreduce_job_setup = blk
   end
   
   def map(&blk)
-    @mapper = blk
+    @jmapreduce_job_mapper = blk
   end
   
   def reduce(&blk)
-    @reducer = blk
+    @jmapreduce_job_reducer = blk
   end
   
   def mapper
-    @mapper
+    @jmapreduce_job_mapper
   end
   
   def reducer
-    @reducer
+    @jmapreduce_job_reducer
   end
   
   def get_setup
-    @setup
+    @jmapreduce_job_setup
   end
   
   def setup_exists
-    !@setup.nil?
+    !@jmapreduce_job_setup.nil?
   end
   
   def set_name(name)
-    @name = name
+    @jmapreduce_job_name = name
   end
   
   def name
-    @name
+    @jmapreduce_job_name
   end
   
   def map_tasks(num_of_tasks)
-    @map_tasks = num_of_tasks
+    @jmapreduce_job_map_tasks = num_of_tasks
   end
   
   def reduce_tasks(num_of_tasks)
-    @reduce_tasks = num_of_tasks
+    @jmapreduce_job_reduce_tasks = num_of_tasks
   end
   
   def num_of_reduce_tasks
-    return @reduce_tasks if @reduce_tasks
-    @reducer ? 1 : 0
+    return @jmapreduce_job_reduce_tasks if @jmapreduce_job_reduce_tasks
+    @jmapreduce_job_reducer ? 1 : 0
   end
   
   def set_mapreduce(blk)
@@ -70,62 +70,62 @@ class JMapReduceJob
   end
   
   def context
-    @context
+    @jmapreduce_job_context
   end
   
   def set_context(context)
-    @context = context
+    @jmapreduce_job_context = context
   end
   
   def set_conf(conf)
-    @conf = conf
+    @jmapreduce_job_conf = conf
   end
   
   def conf
-    @conf
+    @jmapreduce_job_conf
   end
   
   def custom_job(&blk)
-    @custom_job = blk
+    @jmapreduce_job_custom_job = blk
   end
   
   def before_job(&blk)
-    @before_job = blk
+    @jmapreduce_job_before_job = blk
   end
   
   def get_custom_job
-    @custom_job
+    @jmapreduce_job_custom_job
   end
   
   def before_job_hook
-    @before_job
+    @jmapreduce_job_before_job
   end
   
   def emit(key, value)
-    @key.set(key.to_s)
-    @value.set(pack(value))
-    @context.write(@key, @value)
+    @jmapreduce_job_key.set(key.to_s)
+    @jmapreduce_job_value.set(pack(value))
+    @jmapreduce_job_context.write(@jmapreduce_job_key, @jmapreduce_job_value)
   end
   
   def set_properties(properties)
     return unless properties
     
-    @properties = {}
+    @jmapreduce_job_properties = {}
     props = properties.split(',')
     props.each do |property|
       key,value = *property.split('=')
       if key == 'json'
         JsonProperty.parse(value).each do |(k,v)|
-          @properties[k] = v
+          @jmapreduce_job_properties[k] = v
         end
       else
-        @properties[key] = value
+        @jmapreduce_job_properties[key] = value
       end
     end
   end
   
   def property(key)
-    @properties[key.to_s] if @properties
+    @jmapreduce_job_properties[key.to_s] if @jmapreduce_job_properties
   end
   
   def pack(value)

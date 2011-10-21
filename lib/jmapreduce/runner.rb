@@ -12,13 +12,14 @@ class Runner
   end
   
   def hadoop_home
+    raise 'Please set HADOOP_HOME' unless ENV['HADOOP_HOME']
     ENV['HADOOP_HOME']
   end
   
   def hadoop_cmd
     hadoop = `which hadoop 2>/dev/null`
     hadoop = "#{hadoop_home}/bin/hadoop" if hadoop.empty? and (!hadoop_home.empty?)
-    raise 'cannot find hadoop command' if hadoop.empty?
+    raise 'Cannot find hadoop command' if hadoop.empty?
     hadoop.chomp
   end
   
@@ -32,7 +33,7 @@ class Runner
   end
   
   def cmd
-    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS} #{jars_args} #{file_args} #{conf_args} #{archived_args} #{mapred_args} #{properties_args}"
+    "#{hadoop_cmd} jar #{main_jar_path} #{JAVA_MAIN_CLASS} #{file_args} #{jars_args} #{conf_args} #{archived_args} #{mapred_args} #{properties_args}"
   end
   
   def jars_args

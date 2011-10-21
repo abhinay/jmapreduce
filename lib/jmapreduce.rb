@@ -80,6 +80,8 @@ class JMapReduce
     require script
     input = script_input
     output = script_output
+    
+    set_last_job
     tmp_outputs = []
     
     @@jobs.each_with_index do |jmapreduce_job,index|
@@ -87,6 +89,8 @@ class JMapReduce
       jmapreduce_job.set_properties(conf.get('jmapreduce.property'))
       
       conf.set('jmapreduce.job.index', index.to_s)
+      conf.set('jmapreduce.last_job.reducer', "true") if jmapreduce_job.is_last_reducer
+      conf.set('jmapreduce.last_job.mapper', "true") if jmapreduce_job.is_last_mapper
       
       if @@jobs.size > 1
         if index == @@jobs.size-1
@@ -123,6 +127,18 @@ class JMapReduce
       tmp_path = Path.new(tmp_output)
       hdfs = tmp_path.getFileSystem(conf)
       hdfs.delete(tmp_path, true) if hdfs.exists(tmp_path)
+    end
+  end
+  
+  def self.set_last_job
+    return if @@jobs.empty?
+      
+    # find last job that has a mapper or reducer defined
+    @@jobs.reverse.each do |job|
+      if job.mapper || job.reducer
+        job.reducer ? job.set_last_reducer : job.set_last_mapper
+        break
+      end
     end
   end
 end

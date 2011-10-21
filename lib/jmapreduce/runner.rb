@@ -12,7 +12,7 @@ class Runner
   end
   
   def hadoop_home
-    raise 'Please set HADOOP_HOME' unless ENV['HADOOP_HOME']
+    raise 'Please set HADOOP_HOME'  unless ENV['HADOOP_HOME']
     ENV['HADOOP_HOME']
   end
   

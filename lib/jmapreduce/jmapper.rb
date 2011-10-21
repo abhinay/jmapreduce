@@ -26,6 +26,7 @@ class JMapper < Mapper
     @jmapreduce_mapper_job.set_conf(conf)
     @jmapreduce_mapper_job.set_context(context)
     @jmapreduce_mapper_job.set_properties(conf.get('jmapreduce.property'))
+    @jmapreduce_mapper_job.running_last_emit if conf.get('jmapreduce.last_job.mapper')
     
     @jmapreduce_mapper_job.get_setup.call if @jmapreduce_mapper_job.setup_exists
   end

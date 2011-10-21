@@ -36,6 +36,26 @@ class JMapReduceJob
     @jmapreduce_job_reducer
   end
   
+  def set_last_reducer
+    @jmapreduce_job_last_reducer = true
+  end
+  
+  def set_last_mapper
+    @jmapreduce_job_last_mapper = true
+  end
+  
+  def is_last_reducer
+    @jmapreduce_job_last_reducer
+  end
+  
+  def is_last_mapper
+    @jmapreduce_job_last_mapper
+  end
+  
+  def running_last_emit
+    @jmapreduce_job_running_last_emit = true
+  end
+  
   def get_setup
     @jmapreduce_job_setup
   end
@@ -129,6 +149,8 @@ class JMapReduceJob
   end
   
   def pack(value)
+    return value.to_s if @jmapreduce_job_running_last_emit
+    
     case value
     when Integer, Float, String, Array then return ValuePacker.pack(value)
     when Symbol then return ValuePacker.pack(value.to_s)

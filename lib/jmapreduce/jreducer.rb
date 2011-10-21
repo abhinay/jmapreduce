@@ -26,6 +26,7 @@ class JReducer < Reducer
     @jmapreduce_reducer_job.set_conf(conf)
     @jmapreduce_reducer_job.set_context(context)
     @jmapreduce_reducer_job.set_properties(conf.get('jmapreduce.property'))
+    @jmapreduce_reducer_job.running_last_emit if conf.get('jmapreduce.last_job.reducer')
     
     @jmapreduce_reducer_job.get_setup.call if @jmapreduce_reducer_job.setup_exists
   end

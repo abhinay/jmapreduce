@@ -26,7 +26,6 @@ Notes
 * Mappers and reducers can emit Integers, Floats, Strings, Arrays and Hashes
 * Arrays and Hashes can only be built up of Integers, Floats, Strings, Arrays and Hashes
 * You can chain map/reduce jobs like the example below. The output of one map/reduce job will be the input of the next job
-* Be sure the very last thing you emit in your last job are Strings otherwise you will see binary data in your eventual output
 
 Example
 -------
@@ -90,7 +89,7 @@ Using Java classes Example
       reduce do |word, counts|
         sum = 0
         counts.each {|count| sum += count }
-        emit(word, sum.to_s)
+        emit(word, sum)
       end
     end
     

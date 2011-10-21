@@ -77,6 +77,7 @@ class JMapReduce
       end
     end
     
+    @@jobs ||= []
     require script
     input = script_input
     output = script_output
